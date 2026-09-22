@@ -350,10 +350,20 @@ def test_point_7_8_9_10_diagnosis_evidence_and_no_contradictions(clean_lm, quest
     print(f"Combined Result:   {diag_with_sheet.combined_conclusion}")
 
     # Scenario B: High performing student -> verify "No clear prerequisite gap established"
+    def get_solid_answer(q):
+        if q.dimension == "Concept Understanding":
+            return f"The concept of {q.concept} is defined as a hierarchical data structure algorithm used to organize and optimize search operations with logarithmic bounds."
+        elif q.dimension == "Logical Reasoning":
+            return f"Because tree height directly causes worst-case latency to degrade, rotations ensure balance invariants; therefore query performance depends on maintaining height constraints."
+        elif q.dimension == "Problem Solving":
+            return f"To isolate the defect, I will check boundary cases, verify null pointers, test rotation invariants, and debug step by step across edge conditions."
+        else: # Practical/Application
+            return f"In real-world production database systems, we implement {q.concept} as an in-memory cache index to minimize query latency and scale network throughput."
+
     solid_student_answers = [
         StudentResponseItem(
             question_id=q.id,
-            student_answer=f"Comprehensive explanation meeting all criteria for {q.concept} in {q.dimension}. Explains sequential dependencies, systematic troubleshooting, and practical production trade-offs thoroughly."
+            student_answer=get_solid_answer(q)
         )
         for q in questions
     ]
