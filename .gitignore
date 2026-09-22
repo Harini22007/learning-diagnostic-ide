@@ -32,3 +32,6 @@ __pycache__/
 *.pyo
 *.pyd
 .pytest_cache/
+node_modules/
+.env
+dist?
