@@ -1056,7 +1056,7 @@ def evaluate_single_answer(
             dim_score_ratio = 0.35
             missing_elements.append("Reasoning contains flawed stage dependency assumptions.")
             evidence_notes.append(f"Exhibited misconception in reasoning: {misconceptions[0]}.")
-        elif word_count >= 25 and has_causal:
+        elif word_count >= 18 and has_causal:
             dim_score_ratio = 0.85
             evidence_notes.append(f"Articulated logical cause-and-effect dependencies for {concept}.")
         else:
@@ -1073,7 +1073,7 @@ def evaluate_single_answer(
             dim_score_ratio = 0.20
             missing_elements.append("No actionable troubleshooting steps or variable isolation proposed.")
             evidence_notes.append(f"Did not provide structured diagnostic methodology for {concept}.")
-        elif action_matches >= 3 and word_count >= 25:
+        elif action_matches >= 3 and word_count >= 18:
             dim_score_ratio = 0.90
             evidence_notes.append(f"Provided structured, actionable troubleshooting procedure for {concept}.")
         elif action_matches >= 1:
@@ -1093,7 +1093,7 @@ def evaluate_single_answer(
             dim_score_ratio = 0.30
             missing_elements.append("Failed to articulate realistic practical scenario or architectural trade-offs.")
             evidence_notes.append(f"Struggled to connect {concept} to realistic implementation context.")
-        elif practical_matches >= 2 and word_count >= 25:
+        elif practical_matches >= 2 and word_count >= 18:
             dim_score_ratio = 0.85
             evidence_notes.append(f"Demonstrated practical scenario application with concrete trade-off awareness.")
         else:
@@ -1323,12 +1323,16 @@ def _synthesize_learning_diagnosis(
         earned = c_data["earned"]
         pct = round((earned / poss) * 100, 1) if poss > 0 else 50.0
 
-        if pct >= 75:
+        if pct >= 80:
             perf_level = "Solid"
             strong_concepts.append(c_name)
-        elif pct >= 50:
+        elif pct >= 60:
             perf_level = "Developing"
-            weak_concepts.append((c_name, pct, c_data))
+            # Only treat developing as a weak focus if explicit misconceptions were flagged
+            if c_data.get("misconceptions"):
+                weak_concepts.append((c_name, pct, c_data))
+            else:
+                strong_concepts.append(c_name)
         else:
             perf_level = "Needs Focus"
             weak_concepts.append((c_name, pct, c_data))
